@@ -1,0 +1,53 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.example.testmatrix'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.example.testmatrix"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    def matrixModules = [
+            "matrix-commons",
+            "matrix-android-lib",
+            "matrix-android-commons",
+            "matrix-trace-canary"
+    ]
+
+    matrixModules.each { moduleName ->
+        if (rootProject.subprojects.any { (it.name == moduleName) }) {
+            implementation project(":${moduleName}")
+        } else {
+            implementation group: "com.tencent.matrix", name: moduleName, version: "2.1.0", changing: true
+        }
+    }
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.14-SNAPSHOT'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
